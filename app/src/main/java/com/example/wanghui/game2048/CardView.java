@@ -42,7 +42,7 @@ public class CardView extends FrameLayout {
 
         switch (num) {
             case 0:
-                mTextView.setBackgroundColor(0x00000000);
+                mTextView.setBackgroundColor(0x183c3a32);
                 break;
             case 2:
                 mTextView.setBackgroundColor(0xffeee4da);
@@ -87,10 +87,6 @@ public class CardView extends FrameLayout {
     private void init() {
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         params.setMargins(10, 10, 10, 10);
-        View view = new View(mContext);
-        view.setBackgroundColor(0x183c3a32);
-        view.setLayoutParams(params);
-        addView(view);
         mTextView = new TextView(mContext);
         mTextView.setTextSize(40);
         mTextView.setGravity(Gravity.CENTER);

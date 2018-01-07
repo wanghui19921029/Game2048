@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +60,6 @@ public class GameView extends LinearLayout {
                     case MotionEvent.ACTION_UP:
                         offsetX = event.getX() - startX;
                         offsetY = event.getY() - startY;
-                        Log.i(TAG, "onTouch: x = " + offsetX + ",y = " + offsetY);
                         if (Math.abs(offsetX) > Math.abs(offsetY)) {
                             if (offsetX < -5) {
                                 swipeLeft();
@@ -118,7 +116,8 @@ public class GameView extends LinearLayout {
             }
         }
         if (mList.size() > 0) {
-            Points points = mList.get((int) (Math.random() * mList.size()));
+            int index = (int) (Math.random() * mList.size());
+            Points points = mList.get(index);
             mCardMap[points.getX()][points.getY()].setNum(Math.random() > 0.1 ? 2 : 4);
         }
     }
@@ -240,7 +239,6 @@ public class GameView extends LinearLayout {
         forfor:
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
-                Log.i(TAG, "checkComplete: = " + x + y + mCardMap[x][y].getNum());
                 if (mCardMap[x][y].getNum() == 0 ||
                         (x > 0 && mCardMap[x][y].equals(mCardMap[x - 1][y])) ||
                         (x < 4 - 1 && mCardMap[x][y].equals(mCardMap[x + 1][y])) ||
