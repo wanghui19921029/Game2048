@@ -88,7 +88,7 @@ public class CardView extends FrameLayout {
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         params.setMargins(10, 10, 10, 10);
         mTextView = new TextView(mContext);
-        mTextView.setTextSize(40);
+        mTextView.setTextSize(30);
         mTextView.setGravity(Gravity.CENTER);
         mTextView.setLayoutParams(params);
         addView(mTextView);

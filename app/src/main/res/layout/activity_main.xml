@@ -5,8 +5,17 @@
     android:layout_height="match_parent"
     tools:context="com.example.wanghui.game2048.MainActivity">
 
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="重新开始" />
+
     <com.example.wanghui.game2048.GameView
+        android:id="@+id/gameview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></com.example.wanghui.game2048.GameView>
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn"
+        android:layout_centerInParent="true"></com.example.wanghui.game2048.GameView>
 
 </RelativeLayout>

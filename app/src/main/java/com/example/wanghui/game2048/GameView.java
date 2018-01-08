@@ -10,9 +10,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by wanghui on 2018/1/7.
@@ -46,7 +48,7 @@ public class GameView extends LinearLayout {
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metrics = new DisplayMetrics();
         mWindowManager.getDefaultDisplay().getMetrics(metrics);
-        mWidth = metrics.widthPixels;
+        mWidth = metrics.widthPixels < metrics.heightPixels ? metrics.widthPixels : metrics.heightPixels;
         addCards(mWidth / 4);
         startGame();
         setOnTouchListener(new OnTouchListener() {
@@ -62,15 +64,15 @@ public class GameView extends LinearLayout {
                         offsetY = event.getY() - startY;
                         if (Math.abs(offsetX) > Math.abs(offsetY)) {
                             if (offsetX < -5) {
-                                swipeLeft();
+                                left();
                             } else if (offsetX > 5) {
-                                swipeRight();
+                                right();
                             }
                         } else {
                             if (offsetY < -5) {
-                                swipeUp();
+                                up();
                             } else if (offsetY > 5) {
-                                swipeDown();
+                                down();
                             }
                         }
                         break;
@@ -82,21 +84,21 @@ public class GameView extends LinearLayout {
 
     private void addCards(int width) {
         CardView cardView;
-        LinearLayout line;
+        LinearLayout linearLayout;
         LayoutParams layoutParams;
         for (int y = 0; y < 4; y++) {
-            line = new LinearLayout(getContext());
+            linearLayout = new LinearLayout(getContext());
             layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, width);
-            addView(line, layoutParams);
+            addView(linearLayout, layoutParams);
             for (int x = 0; x < 4; x++) {
                 cardView = new CardView(getContext());
-                line.addView(cardView, width, width);
+                linearLayout.addView(cardView, width, width);
                 mCardMap[x][y] = cardView;
             }
         }
     }
 
-    private void startGame() {
+    public void startGame() {
         for (int x = 0; x < 4; x++) {
             for (int y = 0; y < 4; y++) {
                 mCardMap[x][y].setNum(0);
@@ -116,13 +118,13 @@ public class GameView extends LinearLayout {
             }
         }
         if (mList.size() > 0) {
-            int index = (int) (Math.random() * mList.size());
+            int index = new Random().nextInt(mList.size());
             Points points = mList.get(index);
             mCardMap[points.getX()][points.getY()].setNum(Math.random() > 0.1 ? 2 : 4);
         }
     }
 
-    private void swipeLeft() {
+    private void left() {
         boolean merge = false;
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
@@ -135,6 +137,7 @@ public class GameView extends LinearLayout {
                             merge = true;
                         } else if (mCardMap[x][y].equals(mCardMap[x1][y])) {
                             mCardMap[x][y].setNum(mCardMap[x][y].getNum() * 2);
+                            mCardMap[x][y].startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.scale_anim));
                             mCardMap[x1][y].setNum(0);
                             merge = true;
                         }
@@ -150,7 +153,7 @@ public class GameView extends LinearLayout {
         }
     }
 
-    private void swipeRight() {
+    private void right() {
         boolean merge = false;
         for (int y = 0; y < 4; y++) {
             for (int x = 4 - 1; x >= 0; x--) {
@@ -163,6 +166,7 @@ public class GameView extends LinearLayout {
                             merge = true;
                         } else if (mCardMap[x][y].equals(mCardMap[x1][y])) {
                             mCardMap[x][y].setNum(mCardMap[x][y].getNum() * 2);
+                            mCardMap[x][y].startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.scale_anim));
                             mCardMap[x1][y].setNum(0);
                             merge = true;
                         }
@@ -178,7 +182,7 @@ public class GameView extends LinearLayout {
         }
     }
 
-    private void swipeUp() {
+    private void up() {
         boolean merge = false;
         for (int x = 0; x < 4; x++) {
             for (int y = 0; y < 4; y++) {
@@ -191,6 +195,7 @@ public class GameView extends LinearLayout {
                             merge = true;
                         } else if (mCardMap[x][y].equals(mCardMap[x][y1])) {
                             mCardMap[x][y].setNum(mCardMap[x][y].getNum() * 2);
+                            mCardMap[x][y].startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.scale_anim));
                             mCardMap[x][y1].setNum(0);
                             merge = true;
                         }
@@ -206,7 +211,7 @@ public class GameView extends LinearLayout {
         }
     }
 
-    private void swipeDown() {
+    private void down() {
         boolean merge = false;
         for (int x = 0; x < 4; x++) {
             for (int y = 4 - 1; y >= 0; y--) {
@@ -219,6 +224,7 @@ public class GameView extends LinearLayout {
                             merge = true;
                         } else if (mCardMap[x][y].equals(mCardMap[x][y1])) {
                             mCardMap[x][y].setNum(mCardMap[x][y].getNum() * 2);
+                            mCardMap[x][y].startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.scale_anim));
                             mCardMap[x][y1].setNum(0);
                             merge = true;
                         }
@@ -236,7 +242,7 @@ public class GameView extends LinearLayout {
 
     private void checkComplete() {
         boolean complete = true;
-        forfor:
+        lables:
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 4; x++) {
                 if (mCardMap[x][y].getNum() == 0 ||
@@ -245,14 +251,13 @@ public class GameView extends LinearLayout {
                         (y > 0 && mCardMap[x][y].equals(mCardMap[x][y - 1])) ||
                         (y < 4 - 1 && mCardMap[x][y].equals(mCardMap[x][y + 1]))) {
                     complete = false;
-                    break forfor;
+                    break lables;
                 }
             }
         }
 
         if (complete) {
             new AlertDialog.Builder(getContext()).setTitle("你好").setMessage("游戏结束").setPositiveButton("重新开始", new DialogInterface.OnClickListener() {
-
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     startGame();
